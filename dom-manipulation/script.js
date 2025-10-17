@@ -111,6 +111,30 @@ async function postQuoteToServer(quote) {
   }
 }
 
+// Sync local quotes with server
+async function syncQuotes() {
+  try {
+    console.log("Syncing quotes with server...");
+    // Fetch server quotes
+    const response = await fetch("https://jsonplaceholder.typicode.com/posts");
+    const serverData = await response.json();
+    
+    // Add server quotes if not already present
+    serverData.slice(0, 5).forEach(post => {
+      if (!quotes.some(q => q.text === post.title)) {
+        quotes.push({ text: post.title, category: "Server" });
+      }
+    });
+
+    saveQuotes();
+    populateCategories();
+    showRandomQuote();
+    console.log("Sync completed!");
+  } catch (error) {
+    console.error("Sync failed:", error);
+  }
+}
+
 // Initial setup
 document.addEventListener('DOMContentLoaded', () => {
   populateCategories();
@@ -118,6 +142,6 @@ document.addEventListener('DOMContentLoaded', () => {
   showRandomQuote();
   document.getElementById('newQuote').addEventListener('click', showRandomQuote);
 
-  // Optional: fetch quotes from server every 60s
-  setInterval(fetchQuotesFromServer, 60000);
+  // Periodic sync with server every 60s
+  setInterval(syncQuotes, 60000);
 });
