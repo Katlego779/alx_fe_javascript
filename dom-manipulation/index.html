@@ -14,23 +14,23 @@
     <option value="all">All Categories</option>
   </select>
 
-  <!-- Quote Display -->
+  <!-- Display quotes -->
   <div id="quoteDisplay"></div>
 
-  <!-- Show New Quote Button -->
+  <!-- Show new random quote -->
   <button id="newQuote">Show New Quote</button>
 
-  <!-- Add New Quote -->
+  <!-- Add new quote -->
   <div id="addQuoteForm">
     <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
     <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
     <button id="addQuoteBtn">Add Quote</button>
   </div>
 
-  <!-- Import / Export JSON -->
+  <!-- JSON Import/Export -->
   <div>
-    <button id="exportBtn">Export Quotes</button>
     <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" />
+    <button id="exportQuotesBtn">Export Quotes as JSON</button>
   </div>
 
   <script src="script.js"></script>
