@@ -8,29 +8,24 @@
 <body>
   <h1>Dynamic Quote Generator</h1>
 
-  <!-- Category Filter -->
   <label for="categoryFilter">Filter by category:</label>
   <select id="categoryFilter" onchange="filterQuotes()">
     <option value="all">All Categories</option>
   </select>
 
-  <!-- Display quotes -->
   <div id="quoteDisplay"></div>
 
-  <!-- Show new random quote -->
   <button id="newQuote">Show New Quote</button>
 
-  <!-- Add new quote -->
   <div id="addQuoteForm">
     <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
     <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
     <button id="addQuoteBtn">Add Quote</button>
   </div>
 
-  <!-- JSON Import/Export -->
   <div>
+    <button id="exportBtn">Export Quotes to JSON</button>
     <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" />
-    <button id="exportQuotesBtn">Export Quotes as JSON</button>
   </div>
 
   <script src="script.js"></script>
