@@ -34,10 +34,13 @@ function createAddQuoteForm() {
       return;
     }
 
-    quotes.push({ text, category });
+    const newQuote = { text, category };
+    quotes.push(newQuote);
     saveQuotes();
     populateCategories();
     showRandomQuote();
+
+    postQuoteToServer(newQuote); // send to server
 
     textInput.value = "";
     categoryInput.value = "";
@@ -57,7 +60,6 @@ function populateCategories() {
     filter.appendChild(option);
   });
 
-  // Restore last selected filter
   const lastFilter = localStorage.getItem("lastFilter") || "all";
   filter.value = lastFilter;
 }
@@ -75,12 +77,11 @@ function filterQuotesArray() {
   return selectedCategory === "all" ? quotes : quotes.filter(q => q.category === selectedCategory);
 }
 
-// Simulate fetching quotes from server
+// Fetch quotes from server
 async function fetchQuotesFromServer() {
   try {
-    const response = await fetch("https://jsonplaceholder.typicode.com/posts"); // mock API
+    const response = await fetch("https://jsonplaceholder.typicode.com/posts");
     const data = await response.json();
-    // Convert mock data into quotes
     data.slice(0, 5).forEach(post => {
       quotes.push({ text: post.title, category: "Server" });
     });
@@ -90,6 +91,23 @@ async function fetchQuotesFromServer() {
     console.log("Fetched quotes from server!");
   } catch (error) {
     console.error("Failed to fetch quotes from server:", error);
+  }
+}
+
+// Post a new quote to server
+async function postQuoteToServer(quote) {
+  try {
+    const response = await fetch("https://jsonplaceholder.typicode.com/posts", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(quote)
+    });
+    const result = await response.json();
+    console.log("Posted quote to server:", result);
+  } catch (error) {
+    console.error("Failed to post quote to server:", error);
   }
 }
 
