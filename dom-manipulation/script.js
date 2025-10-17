@@ -1,5 +1,5 @@
-// Array of quote objects
-const quotes = [
+// Load quotes from localStorage or use default quotes
+let quotes = JSON.parse(localStorage.getItem('quotes')) || [
   { text: "The best way to get started is to quit talking and begin doing.", category: "Motivation" },
   { text: "Success is not final, failure is not fatal: it is the courage to continue that counts.", category: "Success" },
   { text: "Don’t let yesterday take up too much of today.", category: "Life" }
@@ -7,62 +7,65 @@ const quotes = [
 
 // Function to display a random quote
 function showRandomQuote() {
-  const quoteDisplay = document.getElementById("quoteDisplay");
+  const quoteDisplay = document.getElementById('quoteDisplay');
   const randomIndex = Math.floor(Math.random() * quotes.length);
   const randomQuote = quotes[randomIndex];
-  quoteDisplay.innerHTML = `"${randomQuote.text}" — <strong>${randomQuote.category}</strong>`;
+  quoteDisplay.textContent = `"${randomQuote.text}" — ${randomQuote.category}`;
 }
 
-// Function to add a new quote dynamically
-function addQuote() {
-  const textInput = document.getElementById("newQuoteText");
-  const categoryInput = document.getElementById("newQuoteCategory");
-  const text = textInput.value.trim();
-  const category = categoryInput.value.trim();
+// Function to add a new quote dynamically and save to localStorage
+function createAddQuoteForm() {
+  const textInput = document.getElementById('newQuoteText');
+  const categoryInput = document.getElementById('newQuoteCategory');
 
-  if (!text || !category) {
-    alert("Please enter both a quote and a category.");
-    return;
+  function addQuote() {
+    const text = textInput.value.trim();
+    const category = categoryInput.value.trim();
+
+    if (!text || !category) {
+      alert("Please enter both a quote and a category.");
+      return;
+    }
+
+    quotes.push({ text, category });
+
+    localStorage.setItem('quotes', JSON.stringify(quotes));
+
+    showRandomQuote();
+
+    textInput.value = "";
+    categoryInput.value = "";
   }
 
-  quotes.push({ text, category });
-  showRandomQuote();
-
-  textInput.value = "";
-  categoryInput.value = "";
+  document.getElementById('addQuoteBtn').addEventListener('click', addQuote);
 }
 
-// Function to dynamically create the add-quote form
-function createAddQuoteForm() {
-  const container = document.getElementById("addQuoteFormContainer");
+// Export quotes to JSON
+document.getElementById('exportBtn').addEventListener('click', function() {
+  const blob = new Blob([JSON.stringify(quotes, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'quotes.json';
+  a.click();
+  URL.revokeObjectURL(url);
+});
 
-  const formDiv = document.createElement("div");
+// Import quotes from JSON
+function importFromJsonFile(event) {
+  const fileReader = new FileReader();
+  fileReader.onload = function(e) {
+    const importedQuotes = JSON.parse(e.target.result);
+    quotes.push(...importedQuotes);
 
-  const textInput = document.createElement("input");
-  textInput.id = "newQuoteText";
-  textInput.type = "text";
-  textInput.placeholder = "Enter a new quote";
+    localStorage.setItem('quotes', JSON.stringify(quotes));
 
-  const categoryInput = document.createElement("input");
-  categoryInput.id = "newQuoteCategory";
-  categoryInput.type = "text";
-  categoryInput.placeholder = "Enter quote category";
-
-  const addButton = document.createElement("button");
-  addButton.id = "addQuoteBtn";
-  addButton.textContent = "Add Quote";
-  addButton.addEventListener("click", addQuote);
-
-  formDiv.appendChild(textInput);
-  formDiv.appendChild(categoryInput);
-  formDiv.appendChild(addButton);
-
-  container.appendChild(formDiv);
+    alert('Quotes imported successfully!');
+    showRandomQuote();
+  };
+  fileReader.readAsText(event.target.files[0]);
 }
 
-// Event listener for "Show New Quote"
-document.getElementById("newQuote").addEventListener("click", showRandomQuote);
-
-// Call functions on page load
+// Initialize
 showRandomQuote();
 createAddQuoteForm();
