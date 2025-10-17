@@ -1,4 +1,4 @@
-// Array of quote objects with text and category
+// Array of quote objects
 const quotes = [
   { text: "The best way to get started is to quit talking and begin doing.", category: "Motivation" },
   { text: "Success is not final, failure is not fatal: it is the courage to continue that counts.", category: "Success" },
@@ -32,9 +32,37 @@ function addQuote() {
   categoryInput.value = "";
 }
 
-// Event listeners
-document.getElementById("newQuote").addEventListener("click", showRandomQuote);
-document.getElementById("addQuoteBtn").addEventListener("click", addQuote);
+// Function to dynamically create the add-quote form
+function createAddQuoteForm() {
+  const container = document.getElementById("addQuoteFormContainer");
 
-// Show a quote on page load
+  const formDiv = document.createElement("div");
+
+  const textInput = document.createElement("input");
+  textInput.id = "newQuoteText";
+  textInput.type = "text";
+  textInput.placeholder = "Enter a new quote";
+
+  const categoryInput = document.createElement("input");
+  categoryInput.id = "newQuoteCategory";
+  categoryInput.type = "text";
+  categoryInput.placeholder = "Enter quote category";
+
+  const addButton = document.createElement("button");
+  addButton.id = "addQuoteBtn";
+  addButton.textContent = "Add Quote";
+  addButton.addEventListener("click", addQuote);
+
+  formDiv.appendChild(textInput);
+  formDiv.appendChild(categoryInput);
+  formDiv.appendChild(addButton);
+
+  container.appendChild(formDiv);
+}
+
+// Event listener for "Show New Quote"
+document.getElementById("newQuote").addEventListener("click", showRandomQuote);
+
+// Call functions on page load
 showRandomQuote();
+createAddQuoteForm();
